@@ -2,7 +2,11 @@ package main;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 /**
@@ -36,8 +40,22 @@ public class OlderThan20 {
 
 		System.out.println(olderThan20.size() + " People");
 		
+		Map<Integer, List<Person>> peopleByAge = 
+				people.stream()
+				.collect(Collectors.groupingBy(Person::getAge));
+		System.out.println(peopleByAge);
 		
 		
+		Map<Integer, List<String>> nameByAge = 
+				people.stream().collect(Collectors.groupingBy(Person::getAge, Collectors.mapping(Person::getName, Collectors.toList())));
+		System.out.println(nameByAge);
+		
+		Comparator<Person> byAge = Comparator.comparing(Person::getAge);
+		Map<Character, Optional<Person>> oldestPersonInEachAlphabet =  
+				people.stream()
+				.collect(Collectors.groupingBy(perosn -> perosn.getName().charAt(0),
+						Collectors.reducing(BinaryOperator.maxBy(byAge))));
+		System.out.println(oldestPersonInEachAlphabet);
 	}
 
 }
